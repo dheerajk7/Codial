@@ -2,6 +2,10 @@ const express = require('express');
 const app = express();
 const port = 8000;
 
+//accessing router
+
+app.use('/',require('./routes/index.js'));
+app.use('/',require('./routes/contact_us'));
 app.listen(port,function(error)
 {
     if(error)
