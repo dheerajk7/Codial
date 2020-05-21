@@ -4,6 +4,8 @@ const port = 8000;
 
 //accessing router
 app.use('/',require('./routes/index.js'));
+app.set('view enginer', 'ejs');
+app.set('views','./views');
 
 app.listen(port,function(error)
 {
