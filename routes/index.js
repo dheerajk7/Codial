@@ -7,7 +7,7 @@ router.get('/',homeController.home);
 router.get('/contactus',homeController.contactUs);
 
 //using user router
-router.use('/user',require('./users'));
+router.use('/users',require('./users'));
 
 //export these router
 module.exports = router;
