@@ -1,6 +1,17 @@
 const express = require('express');
 const app = express();
 const port = 8000;
+//getting layout
+var expressLayouts = require('express-ejs-layouts');
+// using layout
+app.use(expressLayouts);
+
+//using static fine
+app.use(express.static('./assets'));
+
+//extract styles and scripts from sub pages into layout
+app.set('layout extractStyles', true);
+app.set('layout extractScripts', true);
 
 //accessing router
 app.use('/',require('./routes/index.js'));
