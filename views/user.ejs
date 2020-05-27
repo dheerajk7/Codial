@@ -1,6 +1,7 @@
 <link rel="stylesheet" href="/css/user_profile.css">
 
-<h1>Welcome to Codial User Section!</h1>
-<% for(var i=10;i<=20;i++) { %>
-    <h1> <%= i %> </h1>  
-<% } %>
+<h1>Welcome to Codial User Profile!</h1>
+<h1><%= locals.name %></h1>
+<h1><%= locals.email %></h1>
+
+<a href="/users/signout">SignOut</a>
