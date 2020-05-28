@@ -1,2 +1,11 @@
 <link rel="stylesheet" href='css/home.css'>
 <h1>This is Our Home</h1>
+<% if(locals.user){ %>
+    <div>
+        <h4>Add Post</h4>
+        <form action="/posts/add-post" method="POST">
+            <textarea name="content" cols="30" rows="5" placeholder="Add text here..."></textarea>
+            <input type="submit" value="Add Post">
+        </form>
+    </div>
+<% } %>

@@ -9,5 +9,8 @@ router.get('/contactus',homeController.contactUs);
 //using user router
 router.use('/users',require('./users'));
 
+//using post router
+router.use('/posts',require('./post'));
+
 //export these router
 module.exports = router;
