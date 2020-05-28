@@ -10,6 +10,10 @@ module.exports.profile = function(request,response)
 //render sign up page
 module.exports.signUp = function(request,response)
 {
+    if(request.isAuthenticated())
+    {
+        return response.redirect('/users/profile');
+    }
     return response.render('sign_up',
     {
         title:'Codial | Sign Up',
@@ -19,6 +23,10 @@ module.exports.signUp = function(request,response)
 //render sign in page
 module.exports.signIn = function(request,response)
 {
+    if(request.isAuthenticated())
+    {
+        return response.redirect('/users/profile');
+    }
     return response.render('sign_in',{
         title:'Codial | Sign In',
     });
@@ -69,5 +77,11 @@ module.exports.addUser = function(request,response)
 //sign in and create session for user
 module.exports.createSession = function(request,response)
 {
-
+    return response.redirect('/');
 };
+
+module.exports.signOut = function(request,response)
+{
+    request.logout();
+    return response.redirect('/');
+}
