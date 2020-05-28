@@ -1,5 +1,6 @@
-<header>
-    Page Header
+<link rel="stylesheet" href="/css/header.css">
+<header id="header">
+    <div><a href="/">Codial</a></div>
     <ul>
         <% if(locals.user) {%>
             <li><a href="/users/profile"><%= user.name %></a></li>
