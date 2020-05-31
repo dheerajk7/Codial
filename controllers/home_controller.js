@@ -1,6 +1,6 @@
 const Post = require('../models/post');
-
-module.exports.home = function(request,response)
+const User = require('../models/user');
+module.exports.home = async function(request,response)
 {
     // console.log(request.cookies);       //accessing cookie
     // response.cookie('user_id','45');     //updating cookie
@@ -16,15 +16,71 @@ module.exports.home = function(request,response)
     // });
 
     //populate user of each post
-    Post.find({}).populate('user').exec(function(request,response)
+    //fetching post without comment
+    // Post.find({}).populate('user').exec(function(err,posts)
+    // {
+    //     if(err){console.log("Error in fetching post");return;}
+    //     return response.render('home',
+    //     {
+    //         title:'Home | Codial',
+    //         posts:posts,
+    //     })
+    // });
+
+    //fetching comment and post both
+    /* normal way of doing these
+    Post.find({})
+    .populate('user').
+    populate(
+        {
+            path:'comments',
+            populate:
+            {
+                path:'user'
+            },
+        })
+    .exec(function(err,posts)
     {
-        if(err){console.log("Error in fetching post");return;}
+        if(err){console.log('Error in Fethcing Post');return;}
+        User.find({},function(err,user)
+        {
+            return response.render('home',
+        {
+            title:'Home : Codial',
+            posts:posts,
+            users:user,
+        });
+        });
+    });
+
+    */
+
+    //doing with async
+    try{
+        let post = await Post.find({}).populate('user').populate(
+            {
+                path:'comments',
+                populate:
+                {
+                    path:'user'
+                },
+            });
+        
+        
+        let user = await User.find({});
+
         return response.render('home',
         {
-            title:'Home | Codial',
-            posts:posts,
-        })
-    });
+            title:'Home : Codial',
+            posts:post,
+            users:user,
+        });
+    }
+    catch(err)
+    {
+        console.log("Error in code");
+        return;
+    }
 }
 
 module.exports.contactUs = function(request,response)

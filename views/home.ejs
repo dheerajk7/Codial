@@ -1,19 +1,33 @@
 <link rel="stylesheet" href='css/home.css'>
 <h1>This is Our Home</h1>
-<% if(locals.user){ %>
-    <div id="post-form">
-        <h4>Add Post</h4>
-        <form action="/posts/add-post" method="POST">
-            <textarea name="content" cols="30" rows="5" placeholder="Add text here..." required></textarea>
-            <input type="submit" value="Add Post">
-        </form>
-    </div>
+<section>
+    <div id="main-container">
+    <% if(locals.user){ %>
+        <section id="post-container">
+            <div id="post-form">
+                <h4>Add Post</h4>
+                <form action="/posts/add-post" method="POST">
+                    <textarea name="content" cols="100" rows="5" placeholder="Add text here..." required></textarea>
+                    <input type="submit" value="Add Post">
+                </form>
+            </div>
 
-    <ul>
-        <% for(post of posts) { %>
-        <li>
-            <div><%= post.content %></div><div><%= post.user.name></div>
-        </li>
-        <% } %>
-    </ul>
-<% } %>
+            <ul class="post">
+                <% for(post of posts) { %>
+                    <%- include('_post.ejs') -%>
+                <% } %>
+            </ul>
+        </section>
+        <section id="user-container">
+            <h1>Freinds</h1>
+            <% for(u of users){ %> 
+                <% if(u.id != locals.user.id) { %> 
+                    <p>
+                        <a href="/users/profile/<%= u.id %>"><%= u.name %></a>
+                    </p>
+                <% } %>
+            <% } %>
+        </section>
+        </div>
+        <div style="height: 100px;"></div>
+    <% } %>

@@ -1,11 +1,16 @@
 <html>
     <head>
         <title><%= title %></title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
         <link rel="stylesheet" href="/css/layout.css">
         <!-- telling layout to extract styles link tag here from sub pages -->
         <%- style -%>
     </head>
     <body>
+        <% if(flash.success && flash.success.length > 0) { %> 
+            <h1><%=flash.success %></h1>
+        <% } %>
         <!-- including partials -->
         <%- include('_header'); -%>
 
@@ -15,5 +20,27 @@
         <!-- including partials -->
         <%- include('_footer'); -%>
         <%- script -%>
+        <script>
+            <% if(flash.success && flash.success.length > 0) { %>
+                new Noty(
+                {
+                    theme:'relax',
+                    text:"<%= flash.success %>",
+                    type:'success',
+                    layout:'topRight',
+                    timeout:1500,
+                }).show();
+            <% } %>
+            <% if(flash.error && flash.error.length > 0) { %>
+                new Noty(
+                {
+                    theme:'relax',
+                    text:'<%= flash.error %>',
+                    type:'error',
+                    layout:'bottomRight',
+                    timeout:1500,
+                }).show();
+            <% } %>
+        </script>
     </body>
 </html>

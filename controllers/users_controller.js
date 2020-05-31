@@ -2,9 +2,33 @@ const User = require('../models/user');
 
 module.exports.profile = function(request,response)
 {
-    return response.render('user',{
-        title : "User Section | Codial",
+    User.findById(request.params.id,function(err,user)
+    {
+        return response.render('user',{
+            title : "User Section | Codial",
+            profile_user:user,
+        });
     });
+    
+}
+
+module.exports.update = function(request,response)
+{
+    if(request.user.id == request.params.id)
+    {
+        User.findByIdAndUpdate(request.params.id,
+        {
+            name: request.body.name,
+            email: request.body.email,
+        },function(err,user)
+        {
+            return response.redirect('back');
+        });
+    }
+    else
+    {
+        return response.status(401).send("UnAuthorized");
+    }
 }
 
 //render sign up page
@@ -77,11 +101,13 @@ module.exports.addUser = function(request,response)
 //sign in and create session for user
 module.exports.createSession = function(request,response)
 {
+    request.flash('success','Logged in Successfully');
     return response.redirect('/');
 };
 
 module.exports.signOut = function(request,response)
 {
     request.logout();
+    request.flash('success','Logged Out Successfully');
     return response.redirect('/');
 }

@@ -1,5 +1,16 @@
 <link rel="stylesheet" href="/css/user_profile.css">
 
 <h1>Welcome to Codial User Profile Section!</h1>
-<h1><%= user.name %></h1>
-<h1><%= user.email %></h1>
+<% if(locals.user.id == profile_user.id) { %>
+    <h1>Edit</h1>
+    <form action="/users/update/<%= profile_user.id %>" method="POST">
+        <input type="text" name="name" placeholder="Your name" value="<%= profile_user.name %>" required>
+        <br>
+        <input type="text" name="email" placeholder="Email" value="<%= profile_user.email %>" required>
+        <br>
+        <input type="submit" value="Update">
+    </form>
+<% } %>
+<h1><%= profile_user.name %></h1>
+<h1><%= profile_user.email %></h1>
+ 

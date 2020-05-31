@@ -4,6 +4,8 @@ const app = express();
 const port = 8000;
 //middleware for scss
 const sassMiddleware = require('node-sass-middleware');
+const flash = require('connect-flash');
+const flashMiddleware = require('./config/flash-middleware');
 app.use(sassMiddleware(
     {
         src:'./assets/scss',
@@ -70,7 +72,8 @@ app.use(session(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
-
+app.use(flash());
+app.use(flashMiddleware.setFlashMsg);
 //accessing router
 app.use('/',require('./routes/index.js'));
 
