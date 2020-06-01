@@ -6,7 +6,7 @@
         <section id="post-container">
             <div id="post-form">
                 <h4>Add Post</h4>
-                <form action="/posts/add-post" method="POST">
+                <form action="/posts/add-post" method="POST" id="new-post-form">
                     <textarea name="content" cols="100" rows="5" placeholder="Add text here..." required></textarea>
                     <input type="submit" value="Add Post">
                 </form>
@@ -31,3 +31,4 @@
         </div>
         <div style="height: 100px;"></div>
     <% } %>
+<script src="js/home_post.js"></script>

@@ -1,18 +1,35 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 
-module.exports.addPost = function(request,response)
+module.exports.addPost = async function(request,response)
 {
-    Post.create(
-        {
-            content:request.body.content,
-            user:request.user.id,
-        },
-        function(err,post){
-            if(err){console.log('Error in adding Post');return response.redirect('back');}
-            console.log('Post Added Successfully');
-            return response.redirect('/');
-        });
+    try{
+        let post = await Post.create(
+            {
+                content:request.body.content,
+                user:request.user.id,
+            });
+
+            //detect type of request as ajax
+            if(request.xhr)
+            {
+                return response.status(200).json(
+                    {
+                        data:
+                        {
+                            post:post,
+                        },
+                        message:"Post Added"
+                    }
+                );
+            }
+            request.flash('success','Post Added Successfully');
+            return response.redirect('back');
+    }catch(err)
+    {
+        request.flash('error',err);
+        return response.redirect('back');
+    }
 }
 
 module.exports.addComment = function(request,response)
