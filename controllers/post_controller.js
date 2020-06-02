@@ -1,5 +1,6 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
+const User = require('../models/user');
 
 module.exports.addPost = async function(request,response)
 {
@@ -10,6 +11,9 @@ module.exports.addPost = async function(request,response)
                 user:request.user.id,
             });
 
+        // console.log('aa',post.id);
+        console.log(request.user.name);
+
             //detect type of request as ajax
             if(request.xhr)
             {
@@ -18,10 +22,12 @@ module.exports.addPost = async function(request,response)
                         data:
                         {
                             post:post,
+                            userName:request.user.name,
                         },
                         message:"Post Added"
                     }
                 );
+                console.log('done');
             }
             request.flash('success','Post Added Successfully');
             return response.redirect('back');
@@ -81,6 +87,15 @@ module.exports.deletePost = async function(request,response)
         {
             post.remove();
             await Comment.deleteMany({post:request.params.post});
+            if(request.xhr)
+            {
+                return response.status(200).json({data:
+                    {
+                    post_id : request.params.id,
+                    },
+                    message:'Post deleted'
+            })
+            }
             return response.redirect('back');
         }
         else

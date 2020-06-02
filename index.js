@@ -19,6 +19,9 @@ app.use(sassMiddleware(
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
+const passportJWT = require('./config/passport-jwt-strategy');
+//google strategy
+const passportGoogle = require('./config/passport-google-oauth-strategy');
 //mongo store for storing session
 const MongoStore = require('connect-mongo')(session);
 //getting layout
@@ -33,7 +36,8 @@ app.use(cookieParser());
 const db = require('./config/mongoose');
 //using static fine
 app.use(express.static('./assets'));
-
+//make the upload path available to the browser
+app.use('/uploads',express.static(__dirname + '/uploads'));
 //extract styles and scripts from sub pages into layout
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);

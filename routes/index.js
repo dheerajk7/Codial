@@ -12,5 +12,8 @@ router.use('/users',require('./users'));
 //using post router
 router.use('/posts',require('./post'));
 
+//using api router
+router.use('/api',require('./api'));
+
 //export these router
 module.exports = router;

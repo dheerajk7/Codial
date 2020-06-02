@@ -57,7 +57,7 @@ module.exports.home = async function(request,response)
 
     //doing with async
     try{
-        let post = await Post.find({}).populate('user').populate(
+        let post = await Post.find({}).sort('-createdAt').populate('user').populate(
             {
                 path:'comments',
                 populate:
@@ -66,9 +66,7 @@ module.exports.home = async function(request,response)
                 },
             });
         
-        
         let user = await User.find({});
-
         return response.render('home',
         {
             title:'Home : Codial',
@@ -78,7 +76,7 @@ module.exports.home = async function(request,response)
     }
     catch(err)
     {
-        console.log("Error in code");
+        console.log("Error in code",err);
         return;
     }
 }

@@ -16,4 +16,8 @@ router.post('/create-session',passport.authenticate(
     }
 ),userController.createSession);        //use passport as middleware to authenticate
 router.get('/signout',userController.signOut);
+
+//google routes for sign in
+router.get('/auth/google',passport.authenticate('google',{scope:['profile','email']}));
+router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'/users/signin'}),userController.createSession);
 module.exports = router;
