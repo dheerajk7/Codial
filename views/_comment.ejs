@@ -1,7 +1,0 @@
-<li><div class="comment"><div><%= comment.content %></div><div><%= comment.user.name%></div></div>
-    <div>
-        <% if(locals.user.id == comment.user.id || locals.user.id == post.user.id) { %>
-            <div><a href="/posts/delete-comment/<%= comment.id %>">Delete</a></div>
-        <% } %>
-    </div>
-</li>

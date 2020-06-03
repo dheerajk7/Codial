@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const fs = require('fs');
 const path = require('path');
+const ResetToken = require('../models/reset_token');
+const forgetPasswordMailer = require('../mailers/forget_password_mailer');
+
 module.exports.profile = function(request,response)
 {
     User.findById(request.params.id,function(err,user)
@@ -128,4 +131,113 @@ module.exports.signOut = function(request,response)
     request.logout();
     request.flash('success','Logged Out Successfully');
     return response.redirect('/');
+}
+
+module.exports.reset = function(request,response)
+{
+    return response.render('reset',{
+        title:'Reset Password | Codial'
+    });
+}
+
+module.exports.resetMail = async function(request,response)
+{
+    try{
+        let user = await User.findOne({email:request.body.email});
+
+        if(user)
+        {
+            let token = await ResetToken.create(
+                {
+                    email:request.body.email,
+                    access_token:Date.now(),
+                    is_valid:true,
+                }
+            );
+            console.log('token',token.access_token);
+            forgetPasswordMailer.forgetPassword(token);
+            request.flash('success','Email sent to registered mail id');
+            return response.redirect('/users/signin');
+        }
+        else
+        {
+            request.flash('error','Email not Exist');
+            return response.redirect('back');
+        }
+    }
+    catch(err)
+    {
+        console.log('Error in creating token',err);
+        return;
+    }
+}
+
+module.exports.resetPassword = async function(request,response)
+{
+    try
+    {
+        let token = await ResetToken.findOne({access_token:request.params.token});
+        if(token && token.is_valid == true)
+        {
+            // let update = await token.updateOne({is_valid:false});
+            return response.render('reset_password',
+            {
+                title:'New Passoword | Codial',
+                token:token.access_token,
+            })
+        }
+        else
+        {
+            console.log('here');
+            request.flash('error','Link Expired');
+            return response.redirect('/users/reset');
+        }
+    }
+    catch(err)
+    {
+        console.log('Error in reseting Password ',err);
+        return;
+    }
+}
+
+module.exports.savePassword = async function(request,response)
+{
+    try
+    {
+        if(request.body.newPassword == request.body.confirm_password)
+        {
+            let token = await ResetToken.findOne({access_token:request.params.token});
+            if(token && token.is_valid == true)
+            {
+                await token.updateOne({is_valid:false});
+                let user = await User.findOne({email:token.email});
+                if(user)
+                {
+                    await user.updateOne({password:request.body.newPassword});
+                    return response.redirect('users/signin');
+                }
+                else
+                {
+                    request.flash('error','Link Expired');
+                    return response.redirect('/users/reset');
+                }
+            }
+            else
+            {
+                request.flash('error','Link Expired');
+                return response.redirect('/users/reset');
+            }
+        }
+        else
+        {
+            request.flash('error','Password Does not matched');
+            return response.redirect('back');
+        }
+        
+    }
+    catch(err)
+    {
+        console.log('Error in saving password ',err);
+        return;
+    }
 }
