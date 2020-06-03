@@ -83,7 +83,7 @@ module.exports.addUser = function(request,response)
     console.log('print request',request.body);
     if(request.body.password != request.body.confirm_password)
     {
-        console.log("Password doesn't matched");
+        request.flash('error','password does not matched');
         return response.redirect('back');
     }
 
@@ -105,7 +105,6 @@ module.exports.addUser = function(request,response)
                         console.log('Error in adding user');
                         return response.redirect('back');
                     }
-                    console.log('new contact is added successfully');
                     return response.redirect('/users/signin');
                 }
             );
@@ -144,7 +143,7 @@ module.exports.resetMail = async function(request,response)
 {
     try{
         let user = await User.findOne({email:request.body.email});
-
+        let token = await ResetToken.deleteOne({email:request.body.email});
         if(user)
         {
             let token = await ResetToken.create(
@@ -154,7 +153,6 @@ module.exports.resetMail = async function(request,response)
                     is_valid:true,
                 }
             );
-            console.log('token',token.access_token);
             forgetPasswordMailer.forgetPassword(token);
             request.flash('success','Email sent to registered mail id');
             return response.redirect('/users/signin');
@@ -188,7 +186,6 @@ module.exports.resetPassword = async function(request,response)
         }
         else
         {
-            console.log('here');
             request.flash('error','Link Expired');
             return response.redirect('/users/reset');
         }
@@ -204,7 +201,7 @@ module.exports.savePassword = async function(request,response)
 {
     try
     {
-        if(request.body.newPassword == request.body.confirm_password)
+        if(request.body.newPassword == request.body.confirmPassword)
         {
             let token = await ResetToken.findOne({access_token:request.params.token});
             if(token && token.is_valid == true)
@@ -214,13 +211,17 @@ module.exports.savePassword = async function(request,response)
                 if(user)
                 {
                     await user.updateOne({password:request.body.newPassword});
-                    return response.redirect('users/signin');
+                    request.flash('success','Password Changed Successfully');
+                    await ResetToken.deleteOne({access_token:request.params.token});
+                    return response.redirect('/users/signin');
                 }
                 else
                 {
                     request.flash('error','Link Expired');
+                    await ResetToken.deleteOne({access_token:request.params.token});
                     return response.redirect('/users/reset');
                 }
+                a
             }
             else
             {
