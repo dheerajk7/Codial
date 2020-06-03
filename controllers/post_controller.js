@@ -1,6 +1,7 @@
 const Post = require('../models/post');
 const Comment = require('../models/comment');
 const User = require('../models/user');
+const commentMailer = require('../mailers/comments_mailer');
 
 module.exports.addPost = async function(request,response)
 {
@@ -38,45 +39,93 @@ module.exports.addPost = async function(request,response)
     }
 }
 
-module.exports.addComment = function(request,response)
+module.exports.addComment = async function(request,response)
 {
-    Post.findById(request.body.post,function(err,post)
+    try
     {
-        if(err)
-        {
-            console.log('Error in finding Post');
-            return;
-        }
+        let post = await Post.findById(request.body.post);
         if(post)
         {
-            Comment.create({
-                content:request.body.comment,
-                post:request.body.post,
-                user:request.user.id,
-            },function(err,comment)
+            let comment = await Comment.create(
+                {
+                    content:request.body.comment,
+                    post:request.body.post,
+                    user:request.user._id,
+                }
+            );
+            post.comments.push(comment);
+            post.save();
+
+            comment = await comment.populate('user','name email').execPopulate();
+            commentMailer.newComment(comment);
+            if(request.xhr)
             {
-                if(err)
-                {
-                    console.log('Error in creating Comment');
-                    return;
-                }
-                if(comment)
-                {
-                    post.comments.push(comment._id);
-                    post.save();
-                    return response.redirect('/')
-                }
-                else
-                {
-                    return response.redirect('/');
-                }
-            });
+                return response.status(200).json(
+                    {
+                        data:{
+                            comment:comment,
+                        },
+                        message:'Comment Added'   
+                    }
+                );
+            }
+
+            request.flash('success','Comment Added');
+            response.redirect('/');
         }
         else
         {
-            return response.redirect('/');
+            console.log('here is error');
+            return;
         }
-    });
+    }
+    catch(err)
+    {
+        if(err)
+        {
+            console.log('Error in adding comment',err);
+            return;
+        }
+    }
+
+    // Post.findById(request.body.post,function(err,post)
+    // {
+    //     if(err)
+    //     {
+    //         console.log('Error in finding Post');
+    //         return;
+    //     }
+    //     if(post)
+    //     {
+    //         Comment.create({
+    //             content:request.body.comment,
+    //             post:request.body.post,
+    //             user:request.user.id,
+    //         },function(err,comment)
+    //         {
+    //             if(err)
+    //             {
+    //                 console.log('Error in creating Comment');
+    //                 return;
+    //             }
+    //             if(comment)
+    //             {
+    //                 post.comments.push(comment._id);
+    //                 post.save();
+    //                 commentMailer.newComment(comment);
+    //                 return response.redirect('/')
+    //             }
+    //             else
+    //             {
+    //                 return response.redirect('/');
+    //             }
+    //         });
+    //     }
+    //     else
+    //     {
+    //         return response.redirect('/');
+    //     }
+    // });
 }
 
 module.exports.deletePost = async function(request,response)
