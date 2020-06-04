@@ -21,7 +21,6 @@ body
             flex-direction: column;
             font-size: 1.5rem;
             color:black;
-            background-color: lightcyan;
             margin-top: 2%;
             border-radius: 20px;
             overflow: hidden;
@@ -63,4 +62,9 @@ body
 #comment-container
 {
     width: 20%;
+}
+
+.post-container
+{
+    background-color: lightcyan;
 }

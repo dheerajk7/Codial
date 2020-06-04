@@ -15,5 +15,8 @@ router.use('/posts',require('./post'));
 //using api router
 router.use('/api',require('./api'));
 
+//using like router
+router.use('/like',require('./like'));
+
 //export these router
 module.exports = router;

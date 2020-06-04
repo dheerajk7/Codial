@@ -64,7 +64,11 @@ module.exports.home = async function(request,response)
                 {
                     path:'user'
                 },
-            });
+                populate:
+                {
+                    path:'likes',
+                }
+            }).populate('likes');
         
         let user = await User.find({});
         return response.render('home',
