@@ -1,6 +1,7 @@
 body
 {
     background-color:lightgray;
+    position: relative;
     #post-form
     {
         text-align: center;
@@ -52,6 +53,7 @@ body
 #main-container
 {
     display: flex;
+    position: relative;
 }
 
 #post-container

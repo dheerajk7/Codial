@@ -2,6 +2,14 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const app = express();
 const port = 8000;
+
+//setup chat server to be used with socket.io
+const chatServer = require('http').Server(app);
+const chatSocket = require('./config/chat_socket').chatSocket(chatServer);
+chatServer.listen(5000);
+console.log('Chat Server is listening on port 5000');
+
+
 //middleware for scss
 const sassMiddleware = require('node-sass-middleware');
 const flash = require('connect-flash');

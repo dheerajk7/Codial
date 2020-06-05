@@ -20,6 +20,7 @@
 
         <!-- including partials -->
         <%- include('_footer'); -%>
+        <%- include('_chat.ejs') -%>
         <%- script -%>
         <script>
             <% if(flash.success && flash.success.length > 0) { %>
@@ -43,5 +44,12 @@
                 }).show();
             <% } %>
         </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="js/chat_engine.js"></script>
+        <% if(locals.user) { %> 
+            <script>
+                new ChatEngine('user-chat-box','<%= locals.user.email %>');
+            </script>
+        <% } %>
     </body>
 </html>
