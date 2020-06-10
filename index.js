@@ -36,6 +36,9 @@ const MongoStore = require('connect-mongo')(session);
 var expressLayouts = require('express-ejs-layouts');
 // using layout
 app.use(expressLayouts);
+//extract styles and scripts from sub pages into layout
+app.set('layout extractStyles', true);
+app.set('layout extractScripts', true);
 app.use(express.urlencoded());
 
 //using cookies
@@ -46,9 +49,7 @@ const db = require('./config/mongoose');
 app.use(express.static('./assets'));
 //make the upload path available to the browser
 app.use('/uploads',express.static(__dirname + '/uploads'));
-//extract styles and scripts from sub pages into layout
-app.set('layout extractStyles', true);
-app.set('layout extractScripts', true);
+
 
 app.set('view engine', 'ejs');
 app.set('views','./views');
